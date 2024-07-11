@@ -11,8 +11,9 @@ const App = () => {
     <BrowserRouter>
       <Routes>
         <Route path='/admin'>
-          <Route path='Product' element={<Product/>} />
-          <Route path='orderd' element={<Orders/>}/>
+          <Route path='products' element={<Product/>} />
+          <Route path='orders' element={<Orders/>}/>
+          {/* <Route path='payments' element={<Payments/>}/> */}
         </Route>
         <Route path='*' element={<NotFound/>}/>
       </Routes>
