@@ -10,6 +10,11 @@ const menus = [
         link: '/admin/dashboard'
     },
     {
+        lable: 'Customers',
+        icon: <i className="ri-customer-service-2-line mr-2"></i>,
+        link: '/admin/customers'
+    },
+    {
         lable: 'Products',
         icon: <i className="ri-shopping-cart-line mr-2"></i>,
         link: '/admin/products'
@@ -29,11 +34,7 @@ const menus = [
         icon: <i className="ri-settings-3-line mr-2"></i>,
         link: '/admin/settings'
     },
-    {
-        lable: 'Logout',
-        icon: <i className="ri-logout-circle-line mr-2"></i>,
-        link: '/admin/logout'
-    },
+    
 ]
 const Layout = ({ children }) => {
     const [size, setSize] = useState(280)
@@ -62,6 +63,10 @@ const Layout = ({ children }) => {
                                 </Link>
                             ))
                         }
+                        <button className=" px-4 py-3 text-gray-50 text-[17.5px] hover:bg-rose-600 hover:text-white">
+                            <i className="ri-logout-circle-line mr-2"></i>
+                            Logout
+                        </button>
 
                     </div>
 
@@ -99,16 +104,17 @@ const Layout = ({ children }) => {
 
                 </section>
             </div>
+
             {/* Mobile */}
             <div className="md:hidden block">
                 <aside className="w-[280px] bg-indigo-600 fixed top-0 left-0 h-full overflow-hidden z-50"
                     style={{ width: mobileSize, transition: "0.3s" }}
                 >
-                    
+
                     <div className=" flex flex-col">
-                    <button className="text-left mx-4 mt-4" onClick={() => setMobileSize(mobileSize === 0 ? 280 : 0)}>
-                    <i className="ri-menu-2-fill text-white text-lg"></i>
-                    </button>
+                        <button className="text-left mx-4 mt-4" onClick={() => setMobileSize(mobileSize === 0 ? 280 : 0)}>
+                            <i className="ri-menu-2-fill text-white text-lg"></i>
+                        </button>
                         {
                             menus.map((item, index) => (
                                 <Link
@@ -121,6 +127,10 @@ const Layout = ({ children }) => {
                                 </Link>
                             ))
                         }
+                        <button className=" px-4 py-3 text-left text-gray-50 text-[17.5px] hover:bg-rose-600 hover:text-white">
+                        <i className="ri-logout-circle-line mr-2"></i>
+                            Logout
+                        </button>
 
                     </div>
 

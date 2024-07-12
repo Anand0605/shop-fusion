@@ -1,12 +1,13 @@
 import React from 'react'
 import Layout from './Layout'
 
-const Product = () => {
+const Dashboard = () => {
   return (
     <Layout>
-        <div>Anand</div>
+       <div>Dashboard</div>
     </Layout>
+   
   )
 }
 
-export default Product
+export default Dashboard
