@@ -8,7 +8,7 @@ import { Navigation } from 'swiper/modules';
 import 'swiper/css/pagination';
 import { Pagination } from 'swiper/modules';
 
-const Home = () => {
+const Products = () => {
 
     const [products, setProducts] = useState([
         {
@@ -88,38 +88,15 @@ const Home = () => {
 
     return (
         <Layout>
-            <header>
-                <Swiper
-                    spaceBetween={50}
-                    slidesPerView={1}
-                    navigation={true}
-                    modules={[Navigation, Pagination]}
-                    pagination={true}
-
-
-                >
-                    <SwiperSlide><img src="/images/p1.jpg" alt="" /></SwiperSlide>
-                    <SwiperSlide><img src="/images/p2.jpg" alt="" /></SwiperSlide>
-                    <SwiperSlide><img src="/images/p3.jpg" alt="" /></SwiperSlide>
-                    <SwiperSlide><img src="/images/p4.jpg" alt="" /></SwiperSlide>
-                    <SwiperSlide><img src="/images/p5.jpg" alt="" /></SwiperSlide>
-                    <SwiperSlide><img src="/images/p6.jpg" alt="" /></SwiperSlide>
-                    <SwiperSlide><img src="/images/p7.jpg" alt="" /></SwiperSlide>
-                    <SwiperSlide><img src="/images/p8.jpg" alt="" /></SwiperSlide>
-                    <SwiperSlide><img src="/images/p9.jpg" alt="" /></SwiperSlide>
-
-
-
-                </Swiper>
-            </header>
+           
             <div className='md:p-16 p-8'>
-                <h1 className='text-3xl font-bold text-center'>Latest Products</h1>
+                <h1 className='text-3xl font-bold text-center'>All Products</h1>
                 <p className='text-gray-500 mx-auto md:w-7/12 mt-2 text-center mb-16'>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum ullam esse aperiam. Quos unde soluta veritatis doloribus dicta itaque cupiditate?</p>
-                <div className=' mx-auto w-10/12 grid md:grid-cols-4 gap-10'>
+                <div className=' mx-auto md:w-10/12 grid md:grid-cols-4 gap-10'>
                     {
 products.map((item,index)=>(
     <div key={index} className='bg-white shadow-lg border'>
-        <img src={item.thumbnail} alt="" />
+        <img src={item.thumbnail} alt="" className='object-fill' />
         <div className='p-4'>
             <h1 className='text-lg font-semibold'>{item.title}</h1>
             <div className='space-x-2'>
@@ -140,4 +117,4 @@ products.map((item,index)=>(
     )
 }
 
-export default Home
+export default Products

@@ -9,6 +9,8 @@ import Payments from './components/Admin/Payments'
 import Settings from './components/Admin/sattings'
 import NotFound from './components/NotFound'
 import Home from './components/Home'
+import Products from './components/Products'
+import Category from './components/Category'
 
 
 const App = () => {
@@ -16,6 +18,11 @@ const App = () => {
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<Home/>}/>
+        <Route path='/products' element={<Products/>}/>
+        <Route path='/category' element={<Category/>}/>
+
+
+
         <Route path='/admin'>
           <Route path='products' element={<Product/>} />
           <Route path='orders' element={<Orders/>}/>
