@@ -115,7 +115,7 @@ const Home = () => {
             <div className='md:p-16 p-8'>
                 <h1 className='text-3xl font-bold text-center'>Latest Products</h1>
                 <p className='text-gray-500 mx-auto md:w-7/12 mt-2 text-center mb-16'>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum ullam esse aperiam. Quos unde soluta veritatis doloribus dicta itaque cupiditate?</p>
-                <div className=' mx-auto w-10/12 grid md:grid-cols-4 gap-10'>
+                <div className=' mx-auto w-12/12 grid md:grid-cols-4 gap-8'>
                     {
 products.map((item,index)=>(
     <div key={index} className='bg-white shadow-lg border'>
@@ -127,7 +127,10 @@ products.map((item,index)=>(
                 <del>₹{item.price}</del>
                 <lable className='text-gray-400' >({item.discount})%</lable>
             </div>
-            <button className='bg-green-700 text-lg font-semibold mt-4 rounded text-white py-2 px-6 w-full'>Bay Now</button>
+            <button className='bg-green-700 text-lg font-semibold mt-4 rounded text-white py-2 px-6 w-full'>Buy Now</button>
+            <button className='bg-rose-700 text-lg font-semibold mt-2 rounded text-white py-2 px-6 w-full'>
+                
+            <i className="ri-shopping-cart-line mr-2"></i>Add to cart</button>
         </div>
         
     </div>

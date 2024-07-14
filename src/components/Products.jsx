@@ -104,7 +104,10 @@ products.map((item,index)=>(
                 <del>₹{item.price}</del>
                 <lable className='text-gray-400' >({item.discount})%</lable>
             </div>
-            <button className='bg-green-700 text-lg font-semibold mt-4 rounded text-white py-2 px-6 w-full'>Bay Now</button>
+            <button className='bg-green-700 text-lg font-semibold mt-4 rounded text-white py-2 px-6 w-full'>Buy Now</button>
+            <button className='bg-rose-700 text-lg font-semibold mt-2 rounded text-white py-2 px-6 w-full'>
+                
+            <i className="ri-shopping-cart-line mr-2"></i>Add to cart</button>
         </div>
         
     </div>
