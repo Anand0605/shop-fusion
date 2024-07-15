@@ -1,5 +1,5 @@
 import 'remixicon/fonts/remixicon.css'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom'
 import 'animate.css';
 // import Admin from './components/Admin'
 import Product from './components/Admin/Products'
@@ -15,21 +15,29 @@ import Category from './components/Category'
 import Login from './components/Login'
 import Signup from './components/Signup'
 import Contact from './components/Contact';
+import Cart from './components/Cart'
+// import PreGuard from './components/Guard/PreGuard';
+
 
 
 const App = () => {
+ 
   return (
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<Home/>}/>
         <Route path='/products' element={<Products/>}/>
         <Route path='/category' element={<Category/>}/>
+        <Route path='cart' element={<Cart/>}/>
+
         <Route path='/login' element={<Login/>}/>
         <Route path='/signup' element={<Signup/>}/>
+       {/* <Route element={<PreGuard/>}>
+       <Route path='/login' element={<Login/>}/>
+       <Route path='/signup' element={<Signup/>}/>
+       </Route> */}
+       
         <Route path='/contact-us' element={<Contact/>}/>
-
-
-
         <Route path='/admin'>
           <Route path='products' element={<Product/>} />
           <Route path='orders' element={<Orders/>}/>

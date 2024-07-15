@@ -2,13 +2,14 @@ import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import firebaseAppConfig from '../util/firebase-config';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 
 const auth = getAuth()
 
 const Layout = ({ children }) => {
     const [open, setOpen] = useState(false);
     const [session, setSession] = useState(null)
+    const [accountMenu, setAccountmenu] = useState(false)
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -17,7 +18,7 @@ const Layout = ({ children }) => {
                 setSession(user)
             }
             else {
-                setSession(null)
+                setSession(false)
             }
         })
     }, [])
@@ -33,6 +34,17 @@ const Layout = ({ children }) => {
         navigate(href);
         setOpen(false); // Optionally close the menu after navigation
     };
+    if (session === null) {
+        return (
+            <div className='bg-gray-100 h-full fixed top-0 left-0 w-full flex justify-center items-center'>
+                <span className="relative flex 8-6 w-6">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-6 w-6 bg-sky-500"></span>
+                </span>
+            </div>
+        )
+    }
+
 
     return (
         <div>
@@ -52,17 +64,28 @@ const Layout = ({ children }) => {
                             </li>
                         ))}
                         {
-                            !session && 
-                           <>
-                            <Link className='block py-5 hover:bg-rose-600 hover:text-white text-center' to='/login'>Login</Link>
-                            <Link className='block py-3 px-6 text-sm font-semibold bg-blue-600 hover:bg-rose-600 text-white rounded-md hover:text-white text-center' to='/signup'>SignUp</Link>
-                           </>
+                            !session &&
+                            <>
+                                <Link className='block py-5 hover:bg-rose-600 hover:text-white text-center' to='/login'>Login</Link>
+                                <Link className='block py-3 px-6 text-sm font-semibold bg-blue-600 hover:bg-rose-600 text-white rounded-md hover:text-white text-center' to='/signup'>SignUp</Link>
+                            </>
                         }
                         {
-                            session && 
-                            <h1>Hii Anand</h1>
+                            session &&
+                            <buton onClick={() => setAccountmenu(!accountMenu)} className="relative">
+                                <img src="./images/avatar2.webp" className='w-10 h-10 rounded-full' alt="" />
+                                {
+                                    accountMenu &&
+                                    <div className='flex flex-col items-start w-[150px] py-3 bg-white absolute top-12 right-0 shadow-lg shadow-gray-200'>
+                                        <Link to='/profile' className='hover:bg-gray-100 w-full p-2'> <i className="ri-user-line mr-1 "></i>my Profile</Link>
+                                        <Link to='/cart' className='hover:bg-gray-100 w-full p-2'> <i className=" mr-1 ri-shopping-cart-line"></i>cart</Link>
+                                        <button onClick={() => signOut(auth)} className='hover:bg-gray-100 w-full p-2 text-left'><i className="ri-logout-circle-line mr-1"></i>Logout</button>
+                                    </div>
+                                }
+
+                            </buton>
                         }
-                        
+
                     </ul>
                 </div>
             </nav>
