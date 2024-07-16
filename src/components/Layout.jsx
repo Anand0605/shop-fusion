@@ -48,7 +48,7 @@ const Layout = ({ children }) => {
 
     return (
         <div>
-            <nav className='sticky shadow-lg bg-slate-50'>
+            <nav className='sticky top-0 shadow-lg bg-slate-50 z-50'>
                 <div className='w-10/12 mx-auto flex items-center justify-between'>
                     <img src="/images/logo2.jpg" className='w-16' alt="" />
                     <button className='md:hidden' onClick={() => setOpen(!open)}>

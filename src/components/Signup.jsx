@@ -5,7 +5,7 @@ import firebaseAppConfig from '../util/firebase-config';
 // import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
 // const auth = getAuth(firebaseAppConfig);
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword,updateProfile } from 'firebase/auth';
 
 const auth = getAuth(firebaseAppConfig)
 
@@ -38,6 +38,7 @@ const Signup = () => {
             e.preventDefault()
             setloader(true)
              await createUserWithEmailAndPassword(auth,formValue.email,  formValue.password)
+             await updateProfile(auth.currentUser,{displayName:formValue.fullname})
             navigate('/')
         }
         catch (err) {
