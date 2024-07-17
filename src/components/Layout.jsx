@@ -73,7 +73,7 @@ const Layout = ({ children }) => {
                         {
                             session &&
                             <buton onClick={() => setAccountmenu(!accountMenu)} className="relative">
-                                <img src="./images/avatar2.webp" className='w-10 h-10 rounded-full' alt="" />
+                                <img src={session.photoURL ? session.photoURL: "./images/avatar2.webp"} className='w-10 h-10 rounded-full' alt="" />
                                 {
                                     accountMenu &&
                                     <div className='flex flex-col items-start w-[150px] py-3 bg-white absolute top-12 right-0 shadow-lg shadow-gray-200'>
@@ -137,6 +137,25 @@ const Layout = ({ children }) => {
             {open && (
                 <aside className='overflow-hidden bg-gray-900 md:hidden shadow-lg fixed top-0 left-0 h-full z-50' style={{ width: 250, transition: '0.3s' }}>
                     <div className='flex flex-col gap-8 p-6'>
+                    {
+                            session &&
+                            <buton onClick={() => setAccountmenu(!accountMenu)} className="relative">
+                                <div className='flex items-center gap-3 flex-col'>
+
+                                <img src={session.photoURL ? session.photoURL: "./images/avatar2.webp"} className='w-10 h-10 rounded-full' alt="" />
+                                <p className='text-white capitalize'>{session.displayName}</p>
+                                </div>
+                                {
+                                    accountMenu &&
+                                    <div className='flex flex-col items-start w-[150px] py-3 bg-white absolute top-12 right-0 shadow-lg shadow-gray-200'>
+                                        <Link to='/profile' className='hover:bg-gray-100 w-full p-2'> <i className="ri-user-line mr-1 "></i>my Profile</Link>
+                                        <Link to='/cart' className='hover:bg-gray-100 w-full p-2'> <i className=" mr-1 ri-shopping-cart-line"></i>cart</Link>
+                                        <button onClick={() => signOut(auth)} className='hover:bg-gray-100 w-full p-2 text-left'><i className="ri-logout-circle-line mr-1"></i>Logout</button>
+                                    </div>
+                                }
+
+                            </buton>
+                        }
                         {menus.map((item, index) => (
                             <button onClick={() => mobileLink(item.href)} key={index} className='text-white'>
                                 {item.label}
