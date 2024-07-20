@@ -1,16 +1,16 @@
 import React, { useState } from 'react'
 // import Layout from './Layout'
 import { Link, useNavigate } from 'react-router-dom'
-import firebaseAppconfig from '../util/firebase-config'
+import firebaseAppConfig from '../util/firebase-config'
 import { signInWithEmailAndPassword, getAuth } from 'firebase/auth'
 
-const auth = getAuth(firebaseAppconfig)
+const auth = getAuth(firebaseAppConfig)
 
 
 const Login = () => {
     const navigate = useNavigate()
     const [passwordType, setPasswordType] = useState("password")
-    const [error, setError] = useState(false)
+    const [error, setError] = useState(null)
     const [loader, setloader] = useState(false)
     const [formValue, setFormValue] = useState({
 
@@ -19,14 +19,18 @@ const Login = () => {
     })
 
     const login = async (e) => {
+        // e.preventDefault()
+        // alert()
+        // console.group(formValue)
         try {
             e.preventDefault()
             setloader(true)
             const user = await signInWithEmailAndPassword(auth, formValue.email, formValue.password)
-            console.log(user)
+            // console.log(user)
             navigate('/')
         }
         catch (err) {
+            // console.log(err)
             setError("Inavlid credential information")
         }
         finally{
@@ -61,7 +65,7 @@ const Login = () => {
                     </div>
                     <div className='flex flex-col relative'>
                         <label className='text-lg font-semibold mb-1'>Password</label>
-                        <input name='password' value={formValue.password} onChange={handleChange} required type='password' placeholder='Enter password' className='p-2 border border-gray-300 ' />
+                        <input name='password' onChange={handleChange} value={formValue.password} required type='password' placeholder='Enter password' className='p-2 border border-gray-300 ' />
                         <button
                             type='button'
                             onClick={() => setPasswordType(passwordType === "password" ? "text" : "password")}

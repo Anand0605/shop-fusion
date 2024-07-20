@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import firebaseAppConfig from '../util/firebase-config';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 
-const auth = getAuth()
+const auth = getAuth(firebaseAppConfig)
 
 const Layout = ({ children }) => {
     const [open, setOpen] = useState(false);
@@ -22,6 +22,7 @@ const Layout = ({ children }) => {
             }
         })
     }, [])
+    // console.log(session)
 
     const menus = [
         { label: "Home", href: '/' },
@@ -144,6 +145,7 @@ const Layout = ({ children }) => {
 
                                 <img src={session.photoURL ? session.photoURL: "./images/avatar2.webp"} className='w-10 h-10 rounded-full' alt="" />
                                 <p className='text-white capitalize'>{session.displayName}</p>
+                                <p className='text-white'>{session.email}</p>
                                 </div>
                                 {
                                     accountMenu &&
