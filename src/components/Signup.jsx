@@ -32,7 +32,7 @@ const Signup = () => {
              await updateProfile(auth.currentUser,{displayName:formValue.fullname})
             //  await updateProfile(auth.currentUser,{displayName:formValue.fullname})
             navigate('/')
-            console.log(User)
+            // console.log(User)
         }
         catch (err) {
             setError(err.message)
