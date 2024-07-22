@@ -1,51 +1,89 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import Layout from './Layout'
+import firebaseAppConfig from '../util/firebase-config';
+import { onAuthStateChanged,getAuth } from 'firebase/auth';
+import { getFirestore,getDocs,collection,query,where } from 'firebase/firestore';
+
+const auth = getAuth(firebaseAppConfig)
+const db = getFirestore(firebaseAppConfig)
 
 const Cart = () => {
     const [products, setProducts] = useState([
-        {
-            title: "nokia smart phone",
-            price: 2000,
-            discount: 15,
-            images: '/products/a.jpg'
+        // {
+        //     title: "nokia smart phone",
+        //     price: 2000,
+        //     discount: 15,
+        //     images: '/products/a.jpg'
 
-        },
-        {
-            title: "nokia smart phone",
-            price: 2000,
-            discount: 15,
-            images: '/products/a.jpg'
+        // },
+        // {
+        //     title: "nokia smart phone",
+        //     price: 2000,
+        //     discount: 15,
+        //     images: '/products/a.jpg'
 
-        },
-        {
-            title: "nokia smart phone",
-            price: 2000,
-            discount: 15,
-            images: '/products/a.jpg'
+        // },
+        // {
+        //     title: "nokia smart phone",
+        //     price: 2000,
+        //     discount: 15,
+        //     images: '/products/a.jpg'
 
-        },
-        {
-            title: "nokia smart phone",
-            price: 2000,
-            discount: 15,
-            images: '/products/a.jpg'
+        // },
+        // {
+        //     title: "nokia smart phone",
+        //     price: 2000,
+        //     discount: 15,
+        //     images: '/products/a.jpg'
 
-        },
-        {
-            title: "nokia smart phone",
-            price: 2000,
-            discount: 15,
-            images: '/products/a.jpg'
+        // },
+        // {
+        //     title: "nokia smart phone",
+        //     price: 2000,
+        //     discount: 15,
+        //     images: '/products/a.jpg'
 
-        },
-        {
-            title: "nokia smart phone",
-            price: 2000,
-            discount: 15,
-            images: '/products/a.jpg'
+        // },
+        // {
+        //     title: "nokia smart phone",
+        //     price: 2000,
+        //     discount: 15,
+        //     images: '/products/a.jpg'
 
-        }
+        // }
     ])
+    const [session, setSession] = useState(null)
+
+    useEffect(()=>{
+        onAuthStateChanged(auth, (user)=>{
+            if(user){
+                setSession(user)
+            }
+            else{
+                setSession(null)
+            }
+        })
+    },[])
+
+    useEffect(()=>{
+        const req =async()=>{
+            if(session)
+                {
+                    const col = collection(db,"carts")
+                    const q = query(col,where("userId", "==", session.uid))
+                    const snapshot = await getDocs(q)
+                    const tmp = []
+                    snapshot.forEach((doc)=>{
+                        const document = doc.data()
+                        tmp.push(document)
+                    })
+                    setProducts(tmp)
+                }
+        }
+        req()
+        
+    },[session])
+
     return (
         <Layout>
 
