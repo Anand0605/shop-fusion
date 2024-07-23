@@ -41,7 +41,7 @@ const Layout = ({ children }) => {
     const [mobileSize, setMobileSize] = useState(0)
     const [accountMenu, setAccountMenu] = useState(false)
     const location = useLocation()
-    console.log(location)
+    // console.log(location)
 
     return (
         <>
