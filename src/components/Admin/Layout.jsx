@@ -136,7 +136,7 @@ const Layout = ({ children }) => {
 
                 </aside>
                 <section
-                    className="bg-gray-400 h-screen"
+                    className="bg-gray-100 min-h-screen"
                 >
                     <nav className="bg-white p-3 shadow flex items-center justify-between sticky top-0 left-0">
                         <div className="flex gap-4 items-center">

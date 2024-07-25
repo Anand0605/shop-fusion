@@ -1,14 +1,16 @@
 import React from 'react'
 import Layout from '../Layout'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import firebaseAppConfig from '../../../util/firebase-config'
-import { getFirestore,addDoc,collection } from 'firebase/firestore'
+import { getFirestore, addDoc,getDoc, collection, getDocs, updateDoc,doc } from 'firebase/firestore'
 import Swal from 'sweetalert2'
+import uploadFile from '../../../util/storage'
 
 
 const db = getFirestore(firebaseAppConfig)
 
 const Product = () => {
+    const[updateUi,setUpdateUi] = useState(false)
     const [products, setProducts] = useState([
         // {
         //     title: 'mens shirt slim blue',
@@ -106,6 +108,23 @@ const Product = () => {
     const [applyCloseAnimation, setApplyCloseAnimation] = useState(false)
 
 
+    useEffect(() => {
+        const req = async () => {
+            const snapshot = await getDocs(collection(db, "products"))
+            const tmp = []
+            snapshot.forEach((doc) => {
+                const allProducts = doc.data()
+                allProducts.id = doc.id
+                tmp.push(allProducts)
+                //    console.log(allProducts)
+            })
+            setProducts(tmp)
+
+        }
+        req()
+    }, [updateUi])
+// console.log(products)
+
     const handleModelClose = () => {
         setApplyCloseAnimation(true)
         setTimeout(() => {
@@ -129,27 +148,39 @@ const Product = () => {
 
     }
 
-    const createProduct = async(e) => {
-       try{
-        e.preventDefault()
-      await addDoc(collection(db, "products"),productForm)
-      setProductForm(model)
-      handleModelClose()
-      new Swal({
-        icon:"success",
-        title:"product added"
-      })
-       }
-       catch(err)
-       {
-        new Swal({
-            icon:"error",
-            title:"Failed !",
-            text:err.message
-        })
-       }
+    const createProduct = async (e) => {
+        try {
+            e.preventDefault()
+            await addDoc(collection(db, "products"), productForm)
+            setProductForm(model)
+            handleModelClose()
+            setUpdateUi(!updateUi)
+            new Swal({
+                icon: "success",
+                title: "product added"
+            })
+        }
+        catch (err) {
+            new Swal({
+                icon: "error",
+                title: "Failed !",
+                text: err.message
+            })
+        }
     }
 
+
+    const uploadProductImage = async (e,id) => {
+        const input = e.target
+        const file = input.files[0]
+        const path = `products/${Date.now()}.png`
+        const url = await uploadFile(file, path)
+        const ref = doc(db,"products",id)
+        await updateDoc(ref,{image:url})
+        setUpdateUi(!updateUi)
+        // console.log(url)
+
+    }
     return (
         <Layout>
             <div className='p-2 '>
@@ -160,11 +191,14 @@ const Product = () => {
                         New Product
                     </button>
                 </div>
-                <div className='grid md:grid-cols-4 gap-8'>
+                <div className='grid md:grid-cols-4 gap-8 mt-8'>
                     {
                         products.map((item, index) => (
                             <div key={index} className='bg-white shadow-md rounded-md'>
-                                <img className='rounded-t-md h-[250px] w-full object-cover' src={item.image} alt="" />
+                                <div className='relative'>
+                                    <img className='rounded-t-md h-[250px] w-full object-cover' src={item.image ? item.image : '/images/tt.jpg'} />
+                                    <input onChange={(e)=>uploadProductImage(e,item.id)} type='file' className=' w-full h-full top-0 left-0 absolute opacity-0' />
+                                </div>
                                 <div className='p-4'>
                                     <h1 className='capitalize font-semibold'>{item.title}</h1>
                                     <p className='text-gray-600'>{item.description.slice(0, 50)}</p>
