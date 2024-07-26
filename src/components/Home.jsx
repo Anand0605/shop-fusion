@@ -70,7 +70,7 @@ const Home = () => {
         <Layout>
             <header>
                 <Swiper
-                    className='z-[-1]'
+                    // className='z-[-1]'
                     spaceBetween={50}
                     slidesPerView={1}
                     navigation={true}
