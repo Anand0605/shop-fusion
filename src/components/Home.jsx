@@ -11,11 +11,15 @@ import firebaseAppConfig from '../util/firebase-config';
 import { onAuthStateChanged, getAuth } from 'firebase/auth';
 import { getFirestore, addDoc, collection, getDocs } from 'firebase/firestore';
 import Swal from 'sweetalert2';
+import axios from 'axios';
+import useRazorpay from "react-razorpay";
 
 const db = getFirestore(firebaseAppConfig)
 const auth = getAuth(firebaseAppConfig)
 
 const Home = () => {
+
+    const [Razorpay] = useRazorpay();
 
     const [products, setProducts] = useState([])
     const [session, setSession] = useState(null)
@@ -66,6 +70,34 @@ const Home = () => {
         }
     }
 
+    const buyNow = async (title,price) => {
+        // alert(price)
+        try {
+            const {data} = await axios.post('http://localhost:8080/order', {amount: price})
+            const options = {
+                key: 'rzp_test_elnSpY3EmagiLn',
+                amount: data.amount,
+                order_id: data.orderId,
+                name: 'You & Me Shop',
+                description: title,
+                image: 'https://img.freepik.com/free-vector/colorful-letter-gradient-logo-design_474888-2309.jpg',
+                handler: function(response) {
+                    console.log(response)
+                }
+            }
+            const rzp = new Razorpay(options)
+
+            rzp.open()
+
+            rzp.on("payment.failed", function(response) {
+                console.log(response)
+            })
+        }
+        catch(err)
+        {
+            console.log(err)
+        }
+    }
     return (
         <Layout>
             <header>
@@ -103,7 +135,7 @@ const Home = () => {
                                         <del>₹{item.price}</del>
                                         <lable className='text-gray-400' >({item.discount})%</lable>
                                     </div>
-                                    <button className='bg-green-700 text-lg font-semibold mt-4 rounded text-white py-2 px-6 w-full'>Buy Now</button>
+                                    <button className='bg-green-700 text-lg font-semibold mt-4 rounded text-white py-2 px-6 w-full' onClick={() => buyNow(item.title,item.price - (item.price * item.discount) / 100)}>Buy Now</button>
                                     <button onClick={() => addToCart(item)} className='bg-rose-700 text-lg font-semibold mt-2 rounded text-white py-2 px-6 w-full'>
                                         <i className="ri-shopping-cart-line mr-2"></i>Add to cart</button>
                                 </div>
