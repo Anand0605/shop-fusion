@@ -70,15 +70,16 @@ const Home = () => {
         }
     }
 
-    const buyNow = async (title,price) => {
+    const buyNow =async (title,price) => {
         // alert(price)
         try {
-            const {data} = await axios.post('http://localhost:8080/order', {amount: price})
+            const {data} = await axios.post('http://localhost:8080/order',{amount:price})
+            // console.log(data)
             const options = {
                 key: 'rzp_test_elnSpY3EmagiLn',
                 amount: data.amount,
                 order_id: data.orderId,
-                name: 'You & Me Shop',
+                name: 'Shop-fusion',
                 description: title,
                 image: 'https://img.freepik.com/free-vector/colorful-letter-gradient-logo-design_474888-2309.jpg',
                 handler: function(response) {
