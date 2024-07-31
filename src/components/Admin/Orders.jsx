@@ -1,141 +1,29 @@
 import React from 'react'
 import Layout from './Layout'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import firebaseAppConfig from '../../util/firebase-config'
+import { getFirestore, getDocs, collection } from 'firebase/firestore'
+
+
+const db = getFirestore(firebaseAppConfig)
 
 const Orders = () => {
 
-    const[orders, setOrders] = useState([
-        {
-            orderId:'#bh5452',
-            customername:'er saurav',
-            email:'ersaurav@gmail.com',
-            mobile:'5555555555',
-            product:'oppo a5',
-            amount:'20000',
-            date:'12-10-2024 10:15:14 AM',
-            status:'pending'
-        },
-        {
-            orderId:'#bh5452',
-            customername:'er saurav',
-            email:'ersaurav@gmail.com',
-            mobile:'5555555555',
-            product:'oppo a5',
-            amount:'20000',
-            date:'12-10-2024 10:15:14 AM',
-            status:'pending'
-        },
-        {
-            orderId:'#bh5452',
-            customername:'er saurav',
-            email:'ersaurav@gmail.com',
-            mobile:'5555555555',
-            product:'oppo a5',
-            amount:'20000',
-            date:'12-10-2024 10:15:14 AM',
-            status:'pending'
-        },
-        {
-            orderId:'#bh5452',
-            customername:'er saurav',
-            email:'ersaurav@gmail.com',
-            mobile:'5555555555',
-            product:'oppo a5',
-            amount:'20000',
-            date:'12-10-2024 10:15:14 AM',
-            status:'pending'
-        },
-        {
-            orderId:'#bh5452',
-            customername:'er saurav',
-            email:'ersaurav@gmail.com',
-            mobile:'5555555555',
-            product:'oppo a5',
-            amount:'20000',
-            date:'12-10-2024 10:15:14 AM',
-            status:'pending'
-        },
-        {
-            orderId:'#bh5452',
-            customername:'er saurav',
-            email:'ersaurav@gmail.com',
-            mobile:'5555555555',
-            product:'oppo a5',
-            amount:'20000',
-            date:'12-10-2024 10:15:14 AM',
-            status:'pending'
-        },
-        {
-            orderId:'#bh5452',
-            customername:'er saurav',
-            email:'ersaurav@gmail.com',
-            mobile:'5555555555',
-            product:'oppo a5',
-            amount:'20000',
-            date:'12-10-2024 10:15:14 AM',
-            status:'pending'
-        },
-        {
-            orderId:'#bh5452',
-            customername:'er saurav',
-            email:'ersaurav@gmail.com',
-            mobile:'5555555555',
-            product:'oppo a5',
-            amount:'20000',
-            date:'12-10-2024 10:15:14 AM',
-            status:'pending'
-        },
-        {
-            orderId:'#bh5452',
-            customername:'er saurav',
-            email:'ersaurav@gmail.com',
-            mobile:'5555555555',
-            product:'oppo a5',
-            amount:'20000',
-            date:'12-10-2024 10:15:14 AM',
-            status:'pending'
-        },
-        {
-            orderId:'#bh5452',
-            customername:'er saurav',
-            email:'ersaurav@gmail.com',
-            mobile:'5555555555',
-            product:'oppo a5',
-            amount:'20000',
-            date:'12-10-2024 10:15:14 AM',
-            status:'pending'
-        },
-        {
-            orderId:'#bh5452',
-            customername:'er saurav',
-            email:'ersaurav@gmail.com',
-            mobile:'5555555555',
-            product:'oppo a5',
-            amount:'20000',
-            date:'12-10-2024 10:15:14 AM',
-            status:'pending'
-        },
-        {
-            orderId:'#bh5452',
-            customername:'er saurav',
-            email:'ersaurav@gmail.com',
-            mobile:'5555555555',
-            product:'oppo a5',
-            amount:'20000',
-            date:'12-10-2024 10:15:14 AM',
-            status:'pending'
-        },
-        {
-            orderId:'#bh5452',
-            customername:'er saurav',
-            email:'ersaurav@gmail.com',
-            mobile:'5555555555',
-            product:'oppo a5',
-            amount:'20000',
-            date:'12-10-2024 10:15:14 AM',
-            status:'pending'
+    const [orders, setOrders] = useState([])
+
+    useEffect(() => {
+        const req = async() => {
+          const snapshot =  await getDocs(collection(db, 'orders'))
+          const tmp = []
+          snapshot.forEach((doc)=>{
+            const order = doc.data()
+            tmp.push(order)
+          })
+          setOrders(tmp)
         }
-    ])
+        req()
+    }, [])
+    console.log(orders)
 
     return (
         <Layout>
@@ -153,22 +41,22 @@ const Orders = () => {
                                 <th>Amount</th>
                                 <th>Date</th>
                                 <th>Status</th>
-                                
+
                             </tr>
                         </thead>
                         <tbody>
                             {
-                                orders.map((item, index)=>(
-                                    <tr key={index} className= 'text-center' style={{
-                                        background : (index+1)%2 === 0 ?'#f1f5f9':'white'
+                                orders.map((item, index) => (
+                                    <tr key={index} className='text-center' style={{
+                                        background: (index + 1) % 2 === 0 ? '#f1f5f9' : 'white'
                                     }}>
-                                        <td className='py-4'>{item.orderId}</td>
-                                        <td className='capitalize'>{item.customername}</td>
-                                        <td>{item.email}</td>
-                                        <td>{item.mobile}</td>
-                                        <td className='capitalize'>{item.product}</td>
-                                        <td>₹{item.amount.toLocaleString()}</td>
-                                        <td>{item.date}</td>
+                                        <td className='py-4'>{item.id}</td>
+                                        <td className='capitalize'>Er.Ashutosh</td>
+                                        <td>vnfkj</td>
+                                        <td>vnjkfs</td>
+                                        <td className='capitalize'>{item.title}</td>
+                                        <td>₹{item.price.toLocaleString()}</td>
+                                        <td>rjnfgrkjn</td>
                                         <td>
                                             <select className='border border-gray-200 p-1'>
                                                 <option value="pending">Pending</option>
@@ -177,7 +65,7 @@ const Orders = () => {
                                                 <option value="returned">Returned</option>
                                             </select>
                                         </td>
-                                       
+
                                     </tr>
                                 ))
                             }

@@ -13,14 +13,16 @@ import { getFirestore, addDoc, collection, getDocs } from 'firebase/firestore';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import useRazorpay from "react-razorpay";
+import { useNavigate } from 'react-router-dom';
+
 
 const db = getFirestore(firebaseAppConfig)
 const auth = getAuth(firebaseAppConfig)
 
 const Home = () => {
 
+    const navigate = useNavigate()
     const [Razorpay] = useRazorpay();
-
     const [products, setProducts] = useState([])
     const [session, setSession] = useState(null)
 
@@ -70,20 +72,25 @@ const Home = () => {
         }
     }
 
-    const buyNow =async (title,price) => {
+    const buyNow =async (product) => {
         // alert(price)
         try {
-            const {data} = await axios.post('http://localhost:8080/order',{amount:price})
+            product.userId = session.uid
+            product.status = "pending"
+            const amount = product.price - (product.price * product.discount) / 100
+            const {data} = await axios.post('http://localhost:8080/order',{amount:amount})
             // console.log(data)
             const options = {
                 key: 'rzp_test_elnSpY3EmagiLn',
                 amount: data.amount,
                 order_id: data.orderId,
                 name: 'Shop-fusion',
-                description: title,
+                description: product.title,
                 image: 'https://img.freepik.com/free-vector/colorful-letter-gradient-logo-design_474888-2309.jpg',
-                handler: function(response) {
-                    console.log(response)
+                handler: async function(response) {
+                    await addDoc(collection(db,"orders"),product)
+                    // console.log(response)
+                    navigate('/profile')
                 }
             }
             const rzp = new Razorpay(options)
@@ -91,7 +98,7 @@ const Home = () => {
             rzp.open()
 
             rzp.on("payment.failed", function(response) {
-                console.log(response)
+                navigate('/failed')
             })
         }
         catch(err)
@@ -136,7 +143,7 @@ const Home = () => {
                                         <del>₹{item.price}</del>
                                         <lable className='text-gray-400' >({item.discount})%</lable>
                                     </div>
-                                    <button className='bg-green-700 text-lg font-semibold mt-4 rounded text-white py-2 px-6 w-full' onClick={() => buyNow(item.title,item.price - (item.price * item.discount) / 100)}>Buy Now</button>
+                                    <button className='bg-green-700 text-lg font-semibold mt-4 rounded text-white py-2 px-6 w-full' onClick={() => buyNow(item)}>Buy Now</button>
                                     <button onClick={() => addToCart(item)} className='bg-rose-700 text-lg font-semibold mt-2 rounded text-white py-2 px-6 w-full'>
                                         <i className="ri-shopping-cart-line mr-2"></i>Add to cart</button>
                                 </div>

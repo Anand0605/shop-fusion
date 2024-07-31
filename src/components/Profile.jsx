@@ -13,6 +13,7 @@ const db = getFirestore(firebaseAppConfig)
 
 
 const Profile = ()=>{
+    const [order, setOrders] = useState([])
     const [uploading, setUploading] = useState(false)
     const navigate = useNavigate()
     const [session, setSession] = useState(null)
@@ -81,6 +82,24 @@ const Profile = ()=>{
         }
         req()
     }, [session, isUpdated])
+
+    useEffect(()=>{
+        const req = async()=>{
+            if(session)
+            {
+                const col = collection(db,"orders")
+                const q = query(col, where("userId", "==", session.uid))
+                const snapshot = await getDocs(q)
+                const tmp = []
+                snapshot.forEach((doc)=>{
+                    tmp.push(doc.data())
+                })
+                setOrders(tmp)
+
+            }
+        }
+        req()
+    },[session])
 
     const setProfilePicture = async (e)=>{
         const input = e.target
@@ -190,6 +209,32 @@ const Profile = ()=>{
 
     return (
         <Layout>
+            <div className='mx-auto md:my-16 shadow-lg rounded-md p-8 md:w-7/12 border'>
+                <div className='flex gap-3'>
+                <i class="ri-shopping-basket-line text-4xl"></i>
+                    <h1 className="text-3xl font-semibold">Orders</h1>
+                </div>
+
+                <hr className='my-6' />
+                {
+                    order.map((item,index)=>(
+                        <div className='flex gap-3 mb-6' key={index}>
+                            <img src={item.image} className='w-[100px]' alt="" />
+                            <div>
+                                <h1 className='capitalize font-semibold text-lg'>{item.title}</h1>
+                                <p className='text-gray-400'>{item.description}</p>
+                                <div className='space-x-2'>
+                                    <label className='font-bold text-lg'>{item.price-(item.price*item.discount)/100}</label>
+                                    <del>{item.price}</del>
+                                    <label className='text-gray-500'>({item.discount}off)%</label>
+                                    
+                                </div>
+                                <button className='mt-2 bg-green-600 rounded px-4 py-2 font-semibold text-white capitalize'>Dispatched</button>
+                            </div>
+                        </div>
+                    ))
+                }
+            </div>
             <div className='mx-auto md:my-16 shadow-lg rounded-md p-8 md:w-7/12 border'>
                 <div className='flex gap-3'>
                     <i className="ri-user-line text-4xl"></i>

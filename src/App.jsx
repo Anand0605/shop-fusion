@@ -18,6 +18,7 @@ import Contact from './components/Contact';
 import Cart from './components/Cart'
 import Profile from './components/Profile';
 import PreGuard from './components/Guard/PreGuard';
+import Failed from './components/Failed';
 // import PreGuard from './components/Guard/PreGuard';
 
 
@@ -52,6 +53,7 @@ const App = () => {
           <Route path='settings' element={<Settings/>}/>
           {/* <Route path='auth' element={<Admin/>}/> */}
         </Route>
+        <Route path='/failed' element={<Failed/>}/>
         <Route path='*' element={<NotFound/>}/>
       </Routes>
     </BrowserRouter>
