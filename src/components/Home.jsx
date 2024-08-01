@@ -9,7 +9,7 @@ import 'swiper/css/pagination';
 import { Pagination } from 'swiper/modules';
 import firebaseAppConfig from '../util/firebase-config';
 import { onAuthStateChanged, getAuth } from 'firebase/auth';
-import { getFirestore, addDoc, collection, getDocs } from 'firebase/firestore';
+import { getFirestore, addDoc, collection, getDocs, serverTimestamp, query, where, doc } from 'firebase/firestore';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import useRazorpay from "react-razorpay";
@@ -19,12 +19,13 @@ import { useNavigate } from 'react-router-dom';
 const db = getFirestore(firebaseAppConfig)
 const auth = getAuth(firebaseAppConfig)
 
-const Home = ({slider,title='Latest products'}) => {
+const Home = ({ slider, title = 'Latest products' }) => {
 
     const navigate = useNavigate()
     const [Razorpay] = useRazorpay();
     const [products, setProducts] = useState([])
     const [session, setSession] = useState(null)
+    const[address, setAddress] = useState(null)
 
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
@@ -36,7 +37,7 @@ const Home = ({slider,title='Latest products'}) => {
             }
         })
     }, [])
-    // console.log(session)
+
 
     useEffect(() => {
         const req = async () => {
@@ -52,6 +53,21 @@ const Home = ({slider,title='Latest products'}) => {
         req()
     }, [])
     // console.log(session)
+    useEffect(() => {
+        const req = async () => {
+            if (session) {
+                const col = collection(db, "addresses")
+                const q = query(col, where('userId', '==', session.uid))
+                const snapshot = await getDocs(q)
+                snapshot.forEach((doc)=>{
+                    const document = doc.data()
+                    setAddress(document)
+                })
+            }
+        }
+        req()
+    }, [session])
+    console.log(address)
 
     const addToCart = async (item) => {
         try {
@@ -73,13 +89,13 @@ const Home = ({slider,title='Latest products'}) => {
         }
     }
 
-    const buyNow =async (product) => {
+    const buyNow = async (product) => {
         // alert(price)
         try {
             product.userId = session.uid
             product.status = "pending"
             const amount = product.price - (product.price * product.discount) / 100
-            const {data} = await axios.post('http://localhost:8080/order',{amount:amount})
+            const { data } = await axios.post('http://localhost:8080/order', { amount: amount })
             // console.log(data)
             const options = {
                 key: 'rzp_test_elnSpY3EmagiLn',
@@ -88,27 +104,30 @@ const Home = ({slider,title='Latest products'}) => {
                 name: 'Shop-fusion',
                 description: product.title,
                 image: 'https://img.freepik.com/free-vector/colorful-letter-gradient-logo-design_474888-2309.jpg',
-                handler: async function(response) {
-                    await addDoc(collection(db,"orders"),product)
+                handler: async function (response) {
+                    product.email = session.email
+                    product.customerName = session.displayName
+                    product.createdAt = serverTimestamp()
+                    product.address = address
+                    await addDoc(collection(db, "orders"), product)
                     // console.log(response)
                     navigate('/profile')
                 },
-                notes:{
-                    name:session.displayName
+                notes: {
+                    name: session.displayName
 
                 }
             }
-            
+
             const rzp = new Razorpay(options)
 
             rzp.open()
 
-            rzp.on("payment.failed", function(response) {
+            rzp.on("payment.failed", function (response) {
                 navigate('/failed')
             })
         }
-        catch(err)
-        {
+        catch (err) {
             console.log(err)
         }
     }
@@ -117,27 +136,27 @@ const Home = ({slider,title='Latest products'}) => {
             {
                 slider &&
                 <header>
-                <Swiper
-                    // className='z-[-1]'
-                    spaceBetween={50}
-                    slidesPerView={1}
-                    navigation={true}
-                    modules={[Navigation, Pagination]}
-                    pagination={true}
-                >
-                    <SwiperSlide><img src="/images/p1.jpg" alt="" /></SwiperSlide>
-                    <SwiperSlide><img src="/images/p2.jpg" alt="" /></SwiperSlide>
-                    <SwiperSlide><img src="/images/p3.jpg" alt="" /></SwiperSlide>
-                    <SwiperSlide><img src="/images/p4.jpg" alt="" /></SwiperSlide>
-                    <SwiperSlide><img src="/images/p5.jpg" alt="" /></SwiperSlide>
-                    <SwiperSlide><img src="/images/p6.jpg" alt="" /></SwiperSlide>
-                    <SwiperSlide><img src="/images/p7.jpg" alt="" /></SwiperSlide>
-                    <SwiperSlide><img src="/images/p8.jpg" alt="" /></SwiperSlide>
-                    <SwiperSlide><img src="/images/p9.jpg" alt="" /></SwiperSlide>
-                </Swiper>
-            </header>
+                    <Swiper
+                        // className='z-[-1]'
+                        spaceBetween={50}
+                        slidesPerView={1}
+                        navigation={true}
+                        modules={[Navigation, Pagination]}
+                        pagination={true}
+                    >
+                        <SwiperSlide><img src="/images/p1.jpg" alt="" /></SwiperSlide>
+                        <SwiperSlide><img src="/images/p2.jpg" alt="" /></SwiperSlide>
+                        <SwiperSlide><img src="/images/p3.jpg" alt="" /></SwiperSlide>
+                        <SwiperSlide><img src="/images/p4.jpg" alt="" /></SwiperSlide>
+                        <SwiperSlide><img src="/images/p5.jpg" alt="" /></SwiperSlide>
+                        <SwiperSlide><img src="/images/p6.jpg" alt="" /></SwiperSlide>
+                        <SwiperSlide><img src="/images/p7.jpg" alt="" /></SwiperSlide>
+                        <SwiperSlide><img src="/images/p8.jpg" alt="" /></SwiperSlide>
+                        <SwiperSlide><img src="/images/p9.jpg" alt="" /></SwiperSlide>
+                    </Swiper>
+                </header>
             }
-           
+
             <div className='md:p-16 p-8'>
                 <h1 className='text-3xl font-bold text-center'>{title}</h1>
                 <p className='text-gray-500 mx-auto md:w-7/12 mt-2 text-center mb-16'>"High-quality, durable, and stylish product perfect for daily use. Enhances your lifestyle with its innovative design and functionality."</p>

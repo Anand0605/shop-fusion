@@ -12,7 +12,7 @@ const auth = getAuth(firebaseAppConfig)
 const db = getFirestore(firebaseAppConfig)
 
 
-const Profile = ()=>{
+const Profile = () => {
     const [order, setOrders] = useState([])
     const [uploading, setUploading] = useState(false)
     const navigate = useNavigate()
@@ -32,13 +32,13 @@ const Profile = ()=>{
         state: '',
         country: '',
         pincode: '',
-        userId: ''
+        userId: '',
+        mobile:''
     })
 
-    useEffect(()=>{
-        onAuthStateChanged(auth, (user)=>{
-            if(user)
-            {
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
                 setSession(user)
             }
             else {
@@ -48,29 +48,28 @@ const Profile = ()=>{
         })
     }, [])
 
-    useEffect(()=>{
-        const req = async ()=>{
-            if(session)
-            {
+    useEffect(() => {
+        const req = async () => {
+            if (session) {
                 setFormValue({
                     ...formValue,
                     fullname: session.displayName,
                     mobile: (session.phoneNumber ? session.phoneNumber : '')
                 })
-    
+
                 setAddressForm({
                     ...addressForm,
                     userId: session.uid
                 })
-    
+
                 // fetch address
                 const col = collection(db, "addresses")
                 const q = query(col, where("userId", "==", session.uid))
                 const snapshot = await getDocs(q)
-                
+
                 setIsAddress(!snapshot.empty)
 
-                snapshot.forEach((doc)=>{
+                snapshot.forEach((doc) => {
                     setDocId(doc.id)
                     const address = doc.data()
                     setAddressForm({
@@ -83,15 +82,14 @@ const Profile = ()=>{
         req()
     }, [session, isUpdated])
 
-    useEffect(()=>{
-        const req = async()=>{
-            if(session)
-            {
-                const col = collection(db,"orders")
+    useEffect(() => {
+        const req = async () => {
+            if (session) {
+                const col = collection(db, "orders")
                 const q = query(col, where("userId", "==", session.uid))
                 const snapshot = await getDocs(q)
                 const tmp = []
-                snapshot.forEach((doc)=>{
+                snapshot.forEach((doc) => {
                     tmp.push(doc.data())
                 })
                 setOrders(tmp)
@@ -99,20 +97,20 @@ const Profile = ()=>{
             }
         }
         req()
-    },[session])
+    }, [session])
 
-    const setProfilePicture = async (e)=>{
+    const setProfilePicture = async (e) => {
         const input = e.target
         const file = input.files[0]
         const filenameArray = file.name.split(".")
-        const ext = filenameArray[filenameArray.length-1]
-        const filename = Date.now()+'.'+ext
+        const ext = filenameArray[filenameArray.length - 1]
+        const filename = Date.now() + '.' + ext
         const path = `pictures/${filename}`
-       
+
         setUploading(true)
-        
-        const url = await uploadFile(file,path)
-        await updateProfile(auth.currentUser,{
+
+        const url = await uploadFile(file, path)
+        await updateProfile(auth.currentUser, {
             photoURL: url
         })
         setUploading(false)
@@ -122,7 +120,7 @@ const Profile = ()=>{
         })
     }
 
-    const handleFormValue = (e)=>{
+    const handleFormValue = (e) => {
         const input = e.target
         const name = input.name
         const value = input.value
@@ -132,9 +130,9 @@ const Profile = ()=>{
         })
     }
 
-    const saveProfileInfo = async (e)=>{
+    const saveProfileInfo = async (e) => {
         e.preventDefault()
-        
+
         await updateProfile(auth.currentUser, {
             displayName: formValue.fullname,
             phoneNumber: formValue.mobile
@@ -145,7 +143,7 @@ const Profile = ()=>{
         })
     }
 
-    const setAddress = async (e)=>{
+    const setAddress = async (e) => {
         try {
             e.preventDefault()
             await addDoc(collection(db, "addresses"), addressForm)
@@ -156,8 +154,7 @@ const Profile = ()=>{
                 title: 'Address Saved !'
             })
         }
-        catch(err)
-        {
+        catch (err) {
             new Swal({
                 icon: 'error',
                 title: 'Failed !',
@@ -166,7 +163,7 @@ const Profile = ()=>{
         }
     }
 
-    const updateAddress = async (e)=>{
+    const updateAddress = async (e) => {
         try {
             e.preventDefault()
             const ref = doc(db, "addresses", docId)
@@ -176,8 +173,7 @@ const Profile = ()=>{
                 title: 'Address Updated !'
             })
         }
-        catch(err)
-        {
+        catch (err) {
             new Swal({
                 icon: 'error',
                 title: 'Failed !',
@@ -186,7 +182,7 @@ const Profile = ()=>{
         }
     }
 
-    const handleAddressForm = (e)=>{
+    const handleAddressForm = (e) => {
         const input = e.target
         const name = input.name
         const value = input.value
@@ -197,55 +193,55 @@ const Profile = ()=>{
     }
 
 
-    const getStatusColor=(status)=>{
-        if(status === "processing")
+    const getStatusColor = (status) => {
+        if (status === "processing")
             return "bg-blue-400"
 
-        else if(status === "pending")
+        else if (status === "pending")
             return "bg-indigo-600"
 
-        else if(status === "dispatched")
+        else if (status === "dispatched")
             return "bg-rose-600"
 
-        else if(status === "Returned")
+        else if (status === "Returned")
             return "bg-orange-600"
 
         else
             return "bg-cyan-600"
     }
 
-    if(session === null)
-    return (
-        <div className="bg-gray-100 h-full fixed top-0 left-0 w-full flex justify-center items-center">
-            <span className="relative flex h-6 w-6">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-6 w-6 bg-sky-500"></span>
-            </span>
-        </div>
-    )
-    
+    if (session === null)
+        return (
+            <div className="bg-gray-100 h-full fixed top-0 left-0 w-full flex justify-center items-center">
+                <span className="relative flex h-6 w-6">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-6 w-6 bg-sky-500"></span>
+                </span>
+            </div>
+        )
+
 
     return (
         <Layout>
             <div className='mx-auto md:my-16 shadow-lg rounded-md p-8 md:w-7/12 border'>
                 <div className='flex gap-3'>
-                <i class="ri-shopping-basket-line text-4xl"></i>
+                    <i class="ri-shopping-basket-line text-4xl"></i>
                     <h1 className="text-3xl font-semibold">Orders</h1>
                 </div>
 
                 <hr className='my-6' />
                 {
-                    order.map((item,index)=>(
+                    order.map((item, index) => (
                         <div className='flex gap-3 mb-6' key={index}>
                             <img src={item.image} className='w-[100px]' alt="" />
                             <div>
                                 <h1 className='capitalize font-semibold text-lg'>{item.title}</h1>
                                 <p className='text-gray-400'>{item.description}</p>
                                 <div className='space-x-2'>
-                                    <label className='font-bold text-lg'>{item.price-(item.price*item.discount)/100}</label>
+                                    <label className='font-bold text-lg'>{item.price - (item.price * item.discount) / 100}</label>
                                     <del>{item.price}</del>
                                     <label className='text-gray-500'>({item.discount}%)off</label>
-                                    
+
                                 </div>
                                 <button className={`mt-2 ${getStatusColor(item.status)} bg-green-600 rounded px-4 py-2 font-semibold text-white capitalize`}>{item.status ? item.status : 'pending'}</button>
                             </div>
@@ -263,10 +259,10 @@ const Profile = ()=>{
 
                 <div className='w-24 h-24 mx-auto relative mb-6'>
                     {
-                        uploading ? 
-                        <img src="/images/loader.gif" />
-                        :
-                        <img src={session.photoURL ? session.photoURL : "/images/avt.avif"} className='rounded-full w-24 h-24'/>
+                        uploading ?
+                            <img src="/images/loader.gif" />
+                            :
+                            <img src={session.photoURL ? session.photoURL : "/images/avt.avif"} className='rounded-full w-24 h-24' />
                     }
                     <input type="file" accept="image/*" className='opacity-0 absolute top-0 left-0 w-full h-full' onChange={setProfilePicture} />
                 </div>
@@ -275,7 +271,7 @@ const Profile = ()=>{
                     <div className='flex flex-col gap-2'>
                         <label className='text-lg font-semibold'>Fullname</label>
 
-                        <input 
+                        <input
                             onChange={handleFormValue}
                             required
                             name="fullname"
@@ -286,7 +282,7 @@ const Profile = ()=>{
 
                     <div className='flex flex-col gap-2'>
                         <label className='text-lg font-semibold'>Email</label>
-                        <input 
+                        <input
                             disabled
                             onChange={handleFormValue}
                             required
@@ -296,25 +292,14 @@ const Profile = ()=>{
                             value={session.email}
                         />
                     </div>
-
-                    <div className='flex flex-col gap-2'>
-                        <label className='text-lg font-semibold'>Mobile</label>
-                        <input 
-                            onChange={handleFormValue}
-                            required
-                            name="mobile"
-                            type="number"
-                            className='p-2 rounded border border-gray-300'
-                            value={formValue.mobile}
-                        />
-                    </div>
-
                     <div />
 
+                    <div className='col-span-2'>
                     <button className='px-4 py-2 bg-rose-600 text-white rounded w-fit hover:bg-green-600'>
                         <i className="ri-save-line mr-2"></i>
                         Save
                     </button>
+                    </div>
                 </form>
             </div>
             <div className='mx-auto md:my-16 shadow-lg rounded-md p-8 md:w-7/12 border'>
@@ -329,7 +314,7 @@ const Profile = ()=>{
                     <div className='flex flex-col gap-2 col-span-2'>
                         <label className='text-lg font-semibold'>Area/Street/Vill</label>
                         <input
-                            onChange={handleAddressForm} 
+                            onChange={handleAddressForm}
                             required
                             name="address"
                             type="text"
@@ -340,8 +325,8 @@ const Profile = ()=>{
 
                     <div className='flex flex-col gap-2'>
                         <label className='text-lg font-semibold'>City</label>
-                        <input 
-                            onChange={handleAddressForm} 
+                        <input
+                            onChange={handleAddressForm}
                             required
                             name="city"
                             type="text"
@@ -352,8 +337,8 @@ const Profile = ()=>{
 
                     <div className='flex flex-col gap-2'>
                         <label className='text-lg font-semibold'>State</label>
-                        <input 
-                            onChange={handleAddressForm} 
+                        <input
+                            onChange={handleAddressForm}
                             required
                             name="state"
                             type="text"
@@ -364,8 +349,8 @@ const Profile = ()=>{
 
                     <div className='flex flex-col gap-2'>
                         <label className='text-lg font-semibold'>Country</label>
-                        <input 
-                            onChange={handleAddressForm} 
+                        <input
+                            onChange={handleAddressForm}
                             required
                             name="country"
                             type="text"
@@ -376,8 +361,8 @@ const Profile = ()=>{
 
                     <div className='flex flex-col gap-2'>
                         <label className='text-lg font-semibold'>Pincode</label>
-                        <input 
-                            onChange={handleAddressForm} 
+                        <input
+                            onChange={handleAddressForm}
                             required
                             name="pincode"
                             type="number"
@@ -385,19 +370,32 @@ const Profile = ()=>{
                             value={addressForm.pincode}
                         />
                     </div>
+                    <div className='flex flex-col gap-2'>
+                        <label className='text-lg font-semibold'>Mobile</label>
+                        <input 
+                            onChange={handleAddressForm}
+                            required
+                            name="mobile"
+                            type="number"
+                            className='p-2 rounded border border-gray-300'
+                            value={addressForm.mobile}
+                        />
+                    </div>
 
-                    {
-                        isAddress ? 
-                        <button className='px-4 py-2 bg-rose-600 text-white rounded w-fit hover:bg-green-600'>
-                            <i className="ri-save-line mr-2"></i>
-                            Save
-                        </button>
-                        :
-                        <button className='px-4 py-2 bg-green-500 text-white rounded w-fit hover:bg-green-600'>
-                            <i className="ri-save-line mr-2"></i>
-                            Submit
-                        </button>
+                   <div className='grid col-span-2'>
+                   {
+                        isAddress ?
+                            <button className='px-4 py-2 bg-rose-600 text-white rounded w-fit hover:bg-green-600'>
+                                <i className="ri-save-line mr-2"></i>
+                                Save
+                            </button>
+                            :
+                            <button className='px-4 py-2 bg-green-500 text-white rounded w-fit hover:bg-green-600'>
+                                <i className="ri-save-line mr-2"></i>
+                                Submit
+                            </button>
                     }
+                   </div>
 
 
                 </form>
