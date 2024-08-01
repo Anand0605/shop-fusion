@@ -2,7 +2,9 @@ import React from 'react'
 import Layout from './Layout'
 import { useState, useEffect } from 'react'
 import firebaseAppConfig from '../../util/firebase-config'
-import { getFirestore, getDocs, collection } from 'firebase/firestore'
+import { getFirestore, getDocs, collection,query,where,getDoc,updateDoc,doc } from 'firebase/firestore'
+import Swal from 'sweetalert2'
+
 
 
 const db = getFirestore(firebaseAppConfig)
@@ -10,20 +12,41 @@ const db = getFirestore(firebaseAppConfig)
 const Orders = () => {
 
     const [orders, setOrders] = useState([])
-
+    
+    
     useEffect(() => {
         const req = async() => {
           const snapshot =  await getDocs(collection(db, 'orders'))
           const tmp = []
           snapshot.forEach((doc)=>{
             const order = doc.data()
+            order.orderId = doc.id
             tmp.push(order)
           })
           setOrders(tmp)
         }
         req()
     }, [])
-    console.log(orders)
+    // console.log(orders)
+
+    const updateOrderStatus=async(e,orderId)=>{
+        
+        try{
+            
+            const status = e.target.value
+            const ref = doc(db,'orders',orderId)
+            await updateDoc(ref,{status:status})
+            new Swal({
+                icon:'success',
+                title:'order status updated !'
+            })
+        
+        }
+        catch(err)
+        {
+            console.log(err)
+        }
+    }
 
     return (
         <Layout>
@@ -50,7 +73,7 @@ const Orders = () => {
                                     <tr key={index} className='text-center' style={{
                                         background: (index + 1) % 2 === 0 ? '#f1f5f9' : 'white'
                                     }}>
-                                        <td className='py-4'>{item.id}</td>
+                                        <td className='py-4'>{item.orderId}</td>
                                         <td className='capitalize'>Er.Ashutosh</td>
                                         <td>vnfkj</td>
                                         <td>vnjkfs</td>
@@ -58,7 +81,7 @@ const Orders = () => {
                                         <td>₹{item.price.toLocaleString()}</td>
                                         <td>rjnfgrkjn</td>
                                         <td>
-                                            <select className='border border-gray-200 p-1'>
+                                            <select className='border border-gray-200 p-1' onChange={(e)=>updateOrderStatus(e,item.orderId)}>
                                                 <option value="pending">Pending</option>
                                                 <option value="processing">Processing</option>
                                                 <option value="dispatched">Dispatched</option>

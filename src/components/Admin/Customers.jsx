@@ -10,25 +10,71 @@ const Customers = () => {
       email: 'ersaurav@gmail.com',
       mobile: '5555555555',
       date: '12-10-2024 10:15:14 AM',
+      address:'Surajpur Greater Noida uttar Pradesh'
     },
     {
       customername: 'er saurav',
       email: 'ersaurav@gmail.com',
       mobile: '5555555555',
       date: '12-10-2024 10:15:14 AM',
+      address:'Surajpur Greater Noida uttar Pradesh'
     },
     {
       customername: 'er saurav',
       email: 'ersaurav@gmail.com',
       mobile: '5555555555',
       date: '12-10-2024 10:15:14 AM',
+      address:'Surajpur Greater Noida uttar Pradesh'
     },
     {
       customername: 'er saurav',
       email: 'ersaurav@gmail.com',
       mobile: '5555555555',
       date: '12-10-2024 10:15:14 AM',
-    }
+      address:'Surajpur Greater Noida uttar Pradesh'
+    },
+    {
+      customername: 'er saurav',
+      email: 'ersaurav@gmail.com',
+      mobile: '5555555555',
+      date: '12-10-2024 10:15:14 AM',
+      address:'Surajpur Greater Noida uttar Pradesh'
+    },
+    {
+      customername: 'er saurav',
+      email: 'ersaurav@gmail.com',
+      mobile: '5555555555',
+      date: '12-10-2024 10:15:14 AM',
+      address:'Surajpur Greater Noida uttar Pradesh'
+    },
+    {
+      customername: 'er saurav',
+      email: 'ersaurav@gmail.com',
+      mobile: '5555555555',
+      date: '12-10-2024 10:15:14 AM',
+      address:'Surajpur Greater Noida uttar Pradesh'
+    },
+    {
+      customername: 'er saurav',
+      email: 'ersaurav@gmail.com',
+      mobile: '5555555555',
+      date: '12-10-2024 10:15:14 AM',
+      address:'Surajpur Greater Noida uttar Pradesh'
+    },
+    {
+      customername: 'er saurav',
+      email: 'ersaurav@gmail.com',
+      mobile: '5555555555',
+      date: '12-10-2024 10:15:14 AM',
+      address:'Surajpur Greater Noida uttar Pradesh'
+    },
+    {
+      customername: 'er saurav',
+      email: 'ersaurav@gmail.com',
+      mobile: '5555555555',
+      date: '12-10-2024 10:15:14 AM',
+      address:'Surajpur Greater Noida uttar Pradesh'
+    },
 
   ])
 
@@ -47,9 +93,8 @@ const Customers = () => {
                 <th className='p-4'>Customer's Name</th>
                 <th>Email</th>
                 <th>Mobile</th>
-
                 <th>Date</th>
-
+                <th>Address</th>
 
               </tr>
             </thead>
@@ -75,6 +120,9 @@ const Customers = () => {
                     {/* <td>₹{item.amount.toLocaleString()}</td> */}
                     <td>
                       {item.date}
+                    </td>
+                    <td>
+                      {item.address}
                     </td>
                     {/* <td>
                                             <select className='border border-gray-200 p-1'>

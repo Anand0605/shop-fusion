@@ -19,7 +19,7 @@ import { useNavigate } from 'react-router-dom';
 const db = getFirestore(firebaseAppConfig)
 const auth = getAuth(firebaseAppConfig)
 
-const Home = () => {
+const Home = ({slider,title='Latest products'}) => {
 
     const navigate = useNavigate()
     const [Razorpay] = useRazorpay();
@@ -51,6 +51,7 @@ const Home = () => {
         }
         req()
     }, [])
+    // console.log(session)
 
     const addToCart = async (item) => {
         try {
@@ -91,8 +92,13 @@ const Home = () => {
                     await addDoc(collection(db,"orders"),product)
                     // console.log(response)
                     navigate('/profile')
+                },
+                notes:{
+                    name:session.displayName
+
                 }
             }
+            
             const rzp = new Razorpay(options)
 
             rzp.open()
@@ -108,7 +114,9 @@ const Home = () => {
     }
     return (
         <Layout>
-            <header>
+            {
+                slider &&
+                <header>
                 <Swiper
                     // className='z-[-1]'
                     spaceBetween={50}
@@ -128,9 +136,11 @@ const Home = () => {
                     <SwiperSlide><img src="/images/p9.jpg" alt="" /></SwiperSlide>
                 </Swiper>
             </header>
+            }
+           
             <div className='md:p-16 p-8'>
-                <h1 className='text-3xl font-bold text-center'>Latest Products</h1>
-                <p className='text-gray-500 mx-auto md:w-7/12 mt-2 text-center mb-16'>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum ullam esse aperiam. Quos unde soluta veritatis doloribus dicta itaque cupiditate?</p>
+                <h1 className='text-3xl font-bold text-center'>{title}</h1>
+                <p className='text-gray-500 mx-auto md:w-7/12 mt-2 text-center mb-16'>"High-quality, durable, and stylish product perfect for daily use. Enhances your lifestyle with its innovative design and functionality."</p>
                 <div className=' mx-auto w-12/12 grid md:grid-cols-4 gap-8'>
                     {
                         products.map((item, index) => (

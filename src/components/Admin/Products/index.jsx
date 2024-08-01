@@ -2,101 +2,18 @@ import React from 'react'
 import Layout from '../Layout'
 import { useState, useEffect } from 'react'
 import firebaseAppConfig from '../../../util/firebase-config'
-import { getFirestore, addDoc,getDoc, collection, getDocs, updateDoc,doc } from 'firebase/firestore'
+import { getFirestore, addDoc, getDoc, collection, getDocs, updateDoc, doc, deleteDoc } from 'firebase/firestore'
 import Swal from 'sweetalert2'
 import uploadFile from '../../../util/storage'
+import { ref } from 'firebase/storage'
 
 
 const db = getFirestore(firebaseAppConfig)
 
 const Product = () => {
-    const[updateUi,setUpdateUi] = useState(false)
-    const [products, setProducts] = useState([
-        // {
-        //     title: 'mens shirt slim blue',
-        //     price: 4500,
-        //     discount: 20,
-        //     description: 'this is best shirt available in inline market',
-        //     image: '/products/a.jpg'
-        // },
-        // {
-        //     title: 'mens shirt slim blue',
-        //     price: 4500,
-        //     discount: 20,
-        //     description: 'this is best shirt available in inline market',
-        //     image: '/products/b.jpg'
-        // },
-        // {
-        //     title: 'mens shirt slim blue',
-        //     price: 4500,
-        //     discount: 20,
-        //     description: 'this is best shirt available in inline market',
-        //     image: '/products/c.jpg'
-        // },
-        // {
-        //     title: 'mens shirt slim blue',
-        //     price: 4500,
-        //     discount: 20,
-        //     description: 'this is best shirt available in inline market',
-        //     image: '/products/d.jpg'
-        // },
-        // {
-        //     title: 'mens shirt slim blue',
-        //     price: 4500,
-        //     discount: 20,
-        //     description: 'this is best shirt available in inline market',
-        //     image: '/products/e.jpg'
-        // },
-        // {
-        //     title: 'mens shirt slim blue',
-        //     price: 4500,
-        //     discount: 20,
-        //     description: 'this is best shirt available in inline market',
-        //     image: '/products/f.jpg'
-        // },
-        // {
-        //     title: 'mens shirt slim blue',
-        //     price: 4500,
-        //     discount: 20,
-        //     description: 'this is best shirt available in inline market',
-        //     image: '/products/g.jpg'
-        // },
-        // {
-        //     title: 'mens shirt slim blue',
-        //     price: 4500,
-        //     discount: 20,
-        //     description: 'this is best shirt available in inline market',
-        //     image: '/products/h.jpg'
-        // },
-        // {
-        //     title: 'mens shirt slim blue',
-        //     price: 4500,
-        //     discount: 20,
-        //     description: 'this is best shirt available in inline market',
-        //     image: '/products/i.jpg'
-        // },
-        // {
-        //     title: 'mens shirt slim blue',
-        //     price: 4500,
-        //     discount: 20,
-        //     description: 'this is best shirt available in inline market',
-        //     image: '/products/j.jpg'
-        // },
-        // {
-        //     title: 'mens shirt slim blue',
-        //     price: 4500,
-        //     discount: 20,
-        //     description: 'this is best shirt available in inline market',
-        //     image: '/products/k.jpg'
-        // },
-        // {
-        //     title: 'mens shirt slim blue',
-        //     price: 4500,
-        //     discount: 20,
-        //     description: 'this is best shirt available in inline market',
-        //     image: '/products/l.jpg'
-        // }
-    ])
+    const [updateUi, setUpdateUi] = useState(false)
+    const [products, setProducts] = useState([])
+
     const model = {
         title: "",
         description: "",
@@ -106,6 +23,7 @@ const Product = () => {
     const [productForm, setProductForm] = useState(model)
     const [productModel, setProductModel] = useState(false)
     const [applyCloseAnimation, setApplyCloseAnimation] = useState(false)
+    const [edit, setEdit] = useState(null)
 
 
     useEffect(() => {
@@ -123,7 +41,7 @@ const Product = () => {
         }
         req()
     }, [updateUi])
-// console.log(products)
+    // console.log(products)
 
     const handleModelClose = () => {
         setApplyCloseAnimation(true)
@@ -170,16 +88,59 @@ const Product = () => {
     }
 
 
-    const uploadProductImage = async (e,id) => {
+    const uploadProductImage = async (e, id) => {
         const input = e.target
         const file = input.files[0]
         const path = `products/${Date.now()}.png`
         const url = await uploadFile(file, path)
-        const ref = doc(db,"products",id)
-        await updateDoc(ref,{image:url})
+        const ref = doc(db, "products", id)
+        await updateDoc(ref, { image: url })
         setUpdateUi(!updateUi)
         // console.log(url)
 
+    }
+    const deleteProduct = async (id) => {
+        try {
+            const ref = doc(db, "products", id)
+            await deleteDoc(ref)
+            setUpdateUi(!updateUi)
+            new Swal({
+                icon: 'Delete',
+                title: 'successfully delete'
+            })
+        }
+        catch (err) {
+            new Swal({
+                icon: 'error',
+                title: 'Failed to delete this product'
+            })
+        }
+    }
+
+    const editProduct=(item)=>{
+        setEdit(item)
+        setProductForm(item)
+        setProductModel(true)
+    }
+
+    const savedData =async(e)=>{
+        try{
+            e.preventDefault()
+            const ref = doc(db,"products",edit.id)
+            await updateDoc(ref,productForm)
+            setProductForm(model)
+            setProductModel(false)
+            setEdit(null)
+            setUpdateUi(!updateUi)
+
+        }
+        catch(err)
+        {
+            new Swal({
+                icon:'error',
+                title:'failed to update this product'
+            })
+        }
     }
     return (
         <Layout>
@@ -197,10 +158,20 @@ const Product = () => {
                             <div key={index} className='bg-white shadow-md rounded-md'>
                                 <div className='relative'>
                                     <img className='rounded-t-md h-[250px] w-full object-cover' src={item.image ? item.image : '/images/tt.jpg'} />
-                                    <input onChange={(e)=>uploadProductImage(e,item.id)} type='file' className=' w-full h-full top-0 left-0 absolute opacity-0' />
+                                    <input onChange={(e) => uploadProductImage(e, item.id)} type='file' className=' w-full h-full top-0 left-0 absolute opacity-0' />
                                 </div>
                                 <div className='p-4'>
-                                    <h1 className='capitalize font-semibold'>{item.title}</h1>
+                                    <div className='flex items-center justify-between'>
+                                        <h1 className='capitalize font-semibold'>{item.title}</h1>
+                                        <div className='space-x-2'>
+                                            <button onClick={() => deleteProduct(item.id)}>
+                                                <i className="ri-delete-bin-line text-violet-500"></i>
+                                            </button>
+                                            <button onClick={()=>editProduct(item)}>
+                                                <i className="ri-image-edit-line text-rose-500"></i>
+                                            </button>
+                                        </div>
+                                    </div>
                                     <p className='text-gray-600'>{item.description.slice(0, 50)}</p>
                                     <div className='flex gap-2 mt-1'>
                                         <del className='font-semibold'>₹{item.price}</del>
@@ -224,7 +195,7 @@ const Product = () => {
                                 <i className="ri-close-line text-lg"></i>
                             </button>
                             <h1 className='text-lg font-semibold'>New Product</h1>
-                            <form className='grid grid-cols-2 gap-6 mt-4' onSubmit={createProduct}>
+                            <form className='grid grid-cols-2 gap-6 mt-4' onSubmit={edit ? savedData : createProduct}>
                                 <input
                                     onChange={handleProductForm}
                                     required

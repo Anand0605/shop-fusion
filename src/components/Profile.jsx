@@ -196,6 +196,24 @@ const Profile = ()=>{
         })
     }
 
+
+    const getStatusColor=(status)=>{
+        if(status === "processing")
+            return "bg-blue-400"
+
+        else if(status === "pending")
+            return "bg-indigo-600"
+
+        else if(status === "dispatched")
+            return "bg-rose-600"
+
+        else if(status === "Returned")
+            return "bg-orange-600"
+
+        else
+            return "bg-cyan-600"
+    }
+
     if(session === null)
     return (
         <div className="bg-gray-100 h-full fixed top-0 left-0 w-full flex justify-center items-center">
@@ -226,10 +244,10 @@ const Profile = ()=>{
                                 <div className='space-x-2'>
                                     <label className='font-bold text-lg'>{item.price-(item.price*item.discount)/100}</label>
                                     <del>{item.price}</del>
-                                    <label className='text-gray-500'>({item.discount}off)%</label>
+                                    <label className='text-gray-500'>({item.discount}%)off</label>
                                     
                                 </div>
-                                <button className='mt-2 bg-green-600 rounded px-4 py-2 font-semibold text-white capitalize'>Dispatched</button>
+                                <button className={`mt-2 ${getStatusColor(item.status)} bg-green-600 rounded px-4 py-2 font-semibold text-white capitalize`}>{item.status ? item.status : 'pending'}</button>
                             </div>
                         </div>
                     ))
@@ -299,7 +317,6 @@ const Profile = ()=>{
                     </button>
                 </form>
             </div>
-
             <div className='mx-auto md:my-16 shadow-lg rounded-md p-8 md:w-7/12 border'>
                 <div className='flex gap-3'>
                     <i className="ri-link-unlink-m text-4xl"></i>

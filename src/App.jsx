@@ -10,7 +10,7 @@ import Payments from './components/Admin/Payments'
 import Settings from './components/Admin/sattings'
 import NotFound from './components/NotFound'
 import Home from './components/Home'
-import Products from './components/Products'
+// import Products from './components/Products'
 import Category from './components/Category'
 import Login from './components/Login'
 import Signup from './components/Signup'
@@ -30,8 +30,8 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<Home/>}/>
-        <Route path='/products' element={<Products/>}/>
+        <Route path='/' element={<Home slider />}/>
+        <Route path='/products' element={<Home slider={false} title="All Products"/>}/>
         <Route path='/category' element={<Category/>}/>
         <Route path='cart' element={<Cart/>}/>
         <Route path='profile' element ={<Profile/>}/>
