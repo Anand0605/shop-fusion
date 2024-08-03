@@ -163,10 +163,10 @@ const Layout = ({children, update}) => {
                         <h1 className='text-2xl text-white font-semibold mb-3'>Follow Us</h1>
                         <ul className='space-y-2 text-gray-100'>
                             <li><Link to='/'>Facebook</Link></li>
-                            <li><Link to='/'>LinkedIn</Link></li>
-                            <li><Link to='/'>Twitter</Link></li>
+                            <li><Link to='https://www.linkedin.com/in/anand-kumar-gautam-733586207/'>LinkedIn</Link></li>
+                            <li><Link to='https://github.com/Anand0605'>Github</Link></li>
                             <li><Link to='/'>Instagram</Link></li>
-                            <li><Link to='/'>YouTube</Link></li>
+                            <li><Link to='/'>Twitter</Link></li>
                         </ul>
                     </div>
                     <div className='pr-8'>
