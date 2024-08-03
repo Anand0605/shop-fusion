@@ -1,5 +1,9 @@
-import { useState } from "react"
+import { useState,useEffect } from "react"
 import { Link, useLocation } from "react-router-dom"
+import firebaseAppConfig from '../../util/firebase-config'
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth"
+
+const auth = getAuth(firebaseAppConfig)
 
 
 
@@ -40,8 +44,22 @@ const Layout = ({ children }) => {
     const [size, setSize] = useState(280)
     const [mobileSize, setMobileSize] = useState(0)
     const [accountMenu, setAccountMenu] = useState(false)
+    const [session, setSession] = useState(null)
     const location = useLocation()
     // console.log(location)
+
+    useEffect(()=>{
+        onAuthStateChanged(auth, (user)=>{
+            if(user)
+            {
+                setSession(user)
+            }
+            else {
+                setSession(null)
+            }
+        })
+    }, [])
+
 
     return (
         <>
@@ -63,7 +81,9 @@ const Layout = ({ children }) => {
                                 </Link>
                             ))
                         }
-                        <button className=" px-4 py-3 text-gray-50 text-[17.5px] hover:bg-rose-600 hover:text-white">
+                        <button 
+                        onClick={()=>signOut(auth)}
+                         className=" px-4 py-3 text-gray-50 text-[17.5px] hover:bg-rose-600 hover:text-white">
                             <i className="ri-logout-circle-line mr-2"></i>
                             Logout
                         </button>
@@ -88,10 +108,12 @@ const Layout = ({ children }) => {
                                 {
                                     accountMenu && <div className="absolute top-19 right-0 bg-white w-52 p-6 shadow-lg">
                                         <div>
-                                            <h1 className="text-lg font-semibold">Er. Akash</h1>
-                                            <p className="text-gray-500">example@gmail.com</p>
+                                            <h1 className="text-lg font-semibold">{(session && session.displayName) ? session.displayName : 'Admin'}</h1>
+                                            <p className="text-gray-500">{session && session.email}</p>
                                             <dir className="h-px bg-gray-200">
-                                                <button className="mr-12"><i className="ri-logout-circle-r-line mr-2"></i>Logout</button>
+                                                <button
+                                                onClick={()=>signOut(auth)}
+                                                className="mr-12"><i className="ri-logout-circle-r-line mr-2"></i>Logout</button>
                                             </dir>
                                         </div>
                                     </div>
@@ -127,7 +149,9 @@ const Layout = ({ children }) => {
                                 </Link>
                             ))
                         }
-                        <button className=" px-4 py-3 text-left text-gray-50 text-[17.5px] hover:bg-rose-600 hover:text-white">
+                        <button
+                        onClick={()=>signOut(auth)}
+                        className=" px-4 py-3 text-left text-gray-50 text-[17.5px] hover:bg-rose-600 hover:text-white">
                         <i className="ri-logout-circle-line mr-2"></i>
                             Logout
                         </button>
@@ -154,7 +178,9 @@ const Layout = ({ children }) => {
                                             <h1 className="text-lg font-semibold">Er. Akash</h1>
                                             <p className="text-gray-500">example@gmail.com</p>
                                             <dir className="h-px bg-gray-200">
-                                                <button className="mr-12"><i className="ri-logout-circle-r-line mr-2"></i>Logout</button>
+                                                <button
+                                                onClick={()=>signOut(auth)}
+                                                className="mr-12"><i className="ri-logout-circle-r-line mr-2"></i>Logout</button>
                                             </dir>
                                         </div>
                                     </div>

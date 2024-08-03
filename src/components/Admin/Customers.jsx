@@ -1,86 +1,26 @@
 import React from 'react'
 import Layout from './Layout'
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
+import firebaseAppConfig from '../../util/firebase-config'
+import { getFirestore, getDocs, collection } from "firebase/firestore"
+import moment from "moment"
+const db = getFirestore(firebaseAppConfig)
 
 const Customers = () => {
 
-  const [customers, setCustomers] = useState([
-    {
-      customername: 'er saurav',
-      email: 'ersaurav@gmail.com',
-      mobile: '5555555555',
-      date: '12-10-2024 10:15:14 AM',
-      address:'Surajpur Greater Noida uttar Pradesh'
-    },
-    {
-      customername: 'er saurav',
-      email: 'ersaurav@gmail.com',
-      mobile: '5555555555',
-      date: '12-10-2024 10:15:14 AM',
-      address:'Surajpur Greater Noida uttar Pradesh'
-    },
-    {
-      customername: 'er saurav',
-      email: 'ersaurav@gmail.com',
-      mobile: '5555555555',
-      date: '12-10-2024 10:15:14 AM',
-      address:'Surajpur Greater Noida uttar Pradesh'
-    },
-    {
-      customername: 'er saurav',
-      email: 'ersaurav@gmail.com',
-      mobile: '5555555555',
-      date: '12-10-2024 10:15:14 AM',
-      address:'Surajpur Greater Noida uttar Pradesh'
-    },
-    {
-      customername: 'er saurav',
-      email: 'ersaurav@gmail.com',
-      mobile: '5555555555',
-      date: '12-10-2024 10:15:14 AM',
-      address:'Surajpur Greater Noida uttar Pradesh'
-    },
-    {
-      customername: 'er saurav',
-      email: 'ersaurav@gmail.com',
-      mobile: '5555555555',
-      date: '12-10-2024 10:15:14 AM',
-      address:'Surajpur Greater Noida uttar Pradesh'
-    },
-    {
-      customername: 'er saurav',
-      email: 'ersaurav@gmail.com',
-      mobile: '5555555555',
-      date: '12-10-2024 10:15:14 AM',
-      address:'Surajpur Greater Noida uttar Pradesh'
-    },
-    {
-      customername: 'er saurav',
-      email: 'ersaurav@gmail.com',
-      mobile: '5555555555',
-      date: '12-10-2024 10:15:14 AM',
-      address:'Surajpur Greater Noida uttar Pradesh'
-    },
-    {
-      customername: 'er saurav',
-      email: 'ersaurav@gmail.com',
-      mobile: '5555555555',
-      date: '12-10-2024 10:15:14 AM',
-      address:'Surajpur Greater Noida uttar Pradesh'
-    },
-    {
-      customername: 'er saurav',
-      email: 'ersaurav@gmail.com',
-      mobile: '5555555555',
-      date: '12-10-2024 10:15:14 AM',
-      address:'Surajpur Greater Noida uttar Pradesh'
-    },
-
-  ])
-
-
-
-
+  const [customers, setCustomers] = useState([])
+  useEffect(()=>{
+    const req = async ()=>{
+        const snapshot = await getDocs(collection(db, "customers"))
+        const tmp = []
+        snapshot.forEach((doc)=>{
+            const document = doc.data()
+            tmp.push(document)
+        })
+        setCustomers(tmp)
+    }
+    req()
+}, [])
   return (
     <Layout>
       <div>
@@ -94,7 +34,7 @@ const Customers = () => {
                 <th>Email</th>
                 <th>Mobile</th>
                 <th>Date</th>
-                <th>Address</th>
+                {/* <th>Address</th> */}
 
               </tr>
             </thead>
@@ -109,30 +49,14 @@ const Customers = () => {
                       <div className='flex p-2 gap-3 items-center  '>
                         <img src="/images/avatar2.webp" className="h-9 w-9 rounded-full" alt="" />
                         <div className='flex flex-col justify-center '>
-                          <span className='font-semibold'>{item.customername}</span>
+                          <span className='font-semibold'>{item.customerName}</span>
                           <small className='text-gray-500'>{item.date}</small>
                         </div>
                       </div>
                     </td>
                     <td>{item.email}</td>
                     <td>{item.mobile}</td>
-                    {/* <td className='capitalize'>{item.product}</td> */}
-                    {/* <td>₹{item.amount.toLocaleString()}</td> */}
-                    <td>
-                      {item.date}
-                    </td>
-                    <td>
-                      {item.address}
-                    </td>
-                    {/* <td>
-                                            <select className='border border-gray-200 p-1'>
-                                                <option value="pending">Pending</option>
-                                                <option value="processing">Processing</option>
-                                                <option value="dispatched">Dispatched</option>
-                                                <option value="returned">Returned</option>
-                                            </select>
-                                        </td>
-                                        */}
+                    <td>{moment(item.createdAt.toDate()).format('DD MMM YYYY, hh:mm:ss A')}</td>                
                   </tr>
                 ))
               }

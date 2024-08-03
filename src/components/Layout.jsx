@@ -3,14 +3,19 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import firebaseAppConfig from '../util/firebase-config';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
+import { collection, query, where, getDocs, getFirestore,doc } from "firebase/firestore"
 
 const auth = getAuth(firebaseAppConfig)
+const db = getFirestore(firebaseAppConfig)
 
-const Layout = ({ children }) => {
+
+const Layout = ({children, update}) => {
     const [open, setOpen] = useState(false);
     const [session, setSession] = useState(null)
     const [accountMenu, setAccountmenu] = useState(false)
     const navigate = useNavigate();
+    const [cartCount, setCartCount] = useState(0)
+    const [role, setRole] = useState(null)
 
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
@@ -22,7 +27,39 @@ const Layout = ({ children }) => {
             }
         })
     }, [])
+
     // console.log(session)
+    useEffect(() => {
+        if (session)
+            {
+                const req = async ()=>{
+                    const col = collection(db, "carts")
+                    const q = query(col, where("userId", "==", session.uid))
+                    const snapshop = await getDocs(q)
+                    setCartCount(snapshop.size)
+                }
+                req()
+            }
+    }, [session,update])
+
+    useEffect(() => {
+        if (session) {
+            const req = async () => {
+                const col = collection(db, "customers");
+                const q = query(col, where("userId", "==", session.uid));
+                const snapshot = await getDocs(q);
+                snapshot.forEach((doc) => {
+                    const customer = doc.data();
+                    console.log(customer); // Log the customer data to the console
+    
+                    // Set the role state from the customer data
+                    setRole(customer.role);
+                });
+            };
+            req();
+        }
+    }, [session]);
+    
 
     const menus = [
         { label: "Home", href: '/' },
@@ -65,6 +102,14 @@ const Layout = ({ children }) => {
                             </li>
                         ))}
                         {
+                            (session && cartCount > 0) &&
+                            <Link to='/cart' className='relative'>
+                                <i className="ri-shopping-cart-line text-xl"></i>
+                                <div className='absolute -top-4 -right-4 font-bold text-white text-xs bg-rose-600 rounded-full w-6 h-6 flex justify-center items-center'>{cartCount}</div>
+                            </Link>
+
+                        }
+                        {
                             !session &&
                             <>
                                 <Link className='block py-5 hover:bg-rose-600 hover:text-white text-center' to='/login'>Login</Link>
@@ -74,10 +119,17 @@ const Layout = ({ children }) => {
                         {
                             session &&
                             <buton onClick={() => setAccountmenu(!accountMenu)} className="relative">
-                                <img src={session.photoURL ? session.photoURL: "./images/avatar2.webp"} className='w-10 h-10 rounded-full' alt="" />
+                                <img src={session.photoURL ? session.photoURL : "./images/avatar2.webp"} className='w-10 h-10 rounded-full' alt="" />
                                 {
                                     accountMenu &&
                                     <div className='flex flex-col items-start w-[150px] py-3 bg-white absolute top-12 right-0 shadow-lg shadow-gray-200'>
+                                         {
+                                            (role && role === "admin") &&
+                                            <Link to="/admin/dashboard" className="w-full text-left px-3 py-2 hover:bg-gray-100">
+                                                <i className="ri-file-shield-2-line mr-2"></i>
+                                                Admin Panel
+                                            </Link>
+                                        }
                                         <Link to='/profile' className='hover:bg-gray-100 w-full p-2'> <i className="ri-user-line mr-1 "></i>my Profile</Link>
                                         <Link to='/cart' className='hover:bg-gray-100 w-full p-2'> <i className=" mr-1 ri-shopping-cart-line"></i>cart</Link>
                                         <button onClick={() => signOut(auth)} className='hover:bg-gray-100 w-full p-2 text-left'><i className="ri-logout-circle-line mr-1"></i>Logout</button>
@@ -85,6 +137,7 @@ const Layout = ({ children }) => {
                                 }
 
                             </buton>
+
                         }
 
                     </ul>
@@ -138,14 +191,14 @@ const Layout = ({ children }) => {
             {open && (
                 <aside className='overflow-hidden bg-gray-900 md:hidden shadow-lg fixed top-0 left-0 h-full z-50' style={{ width: 250, transition: '0.3s' }}>
                     <div className='flex flex-col gap-8 p-6'>
-                    {
+                        {
                             session &&
                             <buton onClick={() => setAccountmenu(!accountMenu)} className="relative">
                                 <div className='flex items-center gap-3 flex-col'>
 
-                                <img src={session.photoURL ? session.photoURL: "./images/avatar2.webp"} className='w-10 h-10 rounded-full' alt="" />
-                                <p className='text-white capitalize'>{session.displayName}</p>
-                                <p className='text-white'>{session.email}</p>
+                                    <img src={session.photoURL ? session.photoURL : "./images/avatar2.webp"} className='w-10 h-10 rounded-full' alt="" />
+                                    <p className='text-white capitalize'>{session.displayName}</p>
+                                    <p className='text-white'>{session.email}</p>
                                 </div>
                                 {
                                     accountMenu &&

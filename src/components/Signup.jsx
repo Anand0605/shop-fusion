@@ -2,26 +2,25 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import firebaseAppConfig from '../util/firebase-config'
 import { getAuth, createUserWithEmailAndPassword,updateProfile } from 'firebase/auth';
+import { getFirestore, addDoc, collection, serverTimestamp } from "firebase/firestore"
 
 const auth = getAuth(firebaseAppConfig)
+const db = getFirestore(firebaseAppConfig)
 // import { getAuth, createUserWithEmailAndPassword,updateProfile } from 'firebase/auth';
 
 // const auth = getAuth(firebaseAppConfig)
 
 const Signup = () => {
     const navigate = useNavigate()
-    // const [passwordType, setPasswordType] = useState("password");
+    const [passwordType, setPasswordType] = useState("password")
     const [error, setError] = useState(null)
     const [loader, setloader] = useState(false)
     const [formValue, setFormValue] = useState({
         fullname: "",
         email: "",
+         mobile: '',
         password: ""
     });
-
-
-
-   
 
     const signup = async(e) => {
         
@@ -30,7 +29,14 @@ const Signup = () => {
             setloader(true)
              const User = await createUserWithEmailAndPassword(auth,formValue.email, formValue.password)
              await updateProfile(auth.currentUser,{displayName:formValue.fullname})
-            //  await updateProfile(auth.currentUser,{displayName:formValue.fullname})
+             await addDoc(collection(db, "customers"), {
+                email: formValue.email,
+                customerName: formValue.fullname,
+                userId: userCre.user.uid,
+                mobile: formValue.mobile,
+                createdAt: serverTimestamp()
+            })
+           
             navigate('/')
             // console.log(User)
         }
@@ -68,14 +74,28 @@ const Signup = () => {
                         <label className='text-lg font-semibold mb-1'>Email Id</label>
                         <input required onChange={handleOnChange} name='email' type="email" value={formValue.email} placeholder='example@gmail.com' className='p-2 border border-gray-300 ' />
                     </div>
+                    <div className="flex flex-col">
+                        <label className="font-semibold text-lg mb-1">Mobile</label>
+                        <input 
+                            onChange={handleOnChange}
+                            required
+                            type="number"
+                            name="mobile"
+                            placeholder="0123456789"
+                            className="p-3 border border-gray-300 rounded"
+                        />
+                    </div>
                     <div className='flex flex-col relative'>
                         <label className='text-lg font-semibold mb-1'>Password</label>
                         <input required onChange={handleOnChange} name='password' value={formValue.password} placeholder='Enter password' className='p-2 border border-gray-300 ' />
                         <button
-                            type='button'
-                            // onClick={() => setPasswordType(passwordType === "password" ? "text" : "password")} type={passwordType} 
-                            className='absolute top-11 right-4 hover:bg-blue-200 rounded-full px-1 hover:text-blue-400'>
-                            {/* {passwordType === "password" ? <i className="ri-eye-line"></i> : <i className="ri-eye-off-line"></i>} */}
+                            
+                            onClick={() => setPasswordType(passwordType === "password" ? "text" : "password")} type='button'
+                            className='absolute top-11 right-4 w-8 h-8 rounded-full hover:bg-blue-200 hover:text-blue-600'>
+                            {passwordType === "password" ?
+                            <i className="ri-eye-line"></i> 
+                            : 
+                            <i className="ri-eye-off-line"></i>}
                         </button>
                     </div>
                     {
