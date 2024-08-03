@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import firebaseAppConfig from '../util/firebase-config';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
-import { collection, query, where, getDocs, getFirestore,doc } from "firebase/firestore"
+import { collection, query, where, getDocs, getFirestore} from "firebase/firestore"
 
 const auth = getAuth(firebaseAppConfig)
 const db = getFirestore(firebaseAppConfig)
@@ -36,6 +36,7 @@ const Layout = ({children, update}) => {
                     const col = collection(db, "carts")
                     const q = query(col, where("userId", "==", session.uid))
                     const snapshop = await getDocs(q)
+                    // console.log(snapshop)
                     setCartCount(snapshop.size)
                 }
                 req()
@@ -50,9 +51,7 @@ const Layout = ({children, update}) => {
                 const snapshot = await getDocs(q);
                 snapshot.forEach((doc) => {
                     const customer = doc.data();
-                    console.log(customer); // Log the customer data to the console
-    
-                    // Set the role state from the customer data
+                    // console.log(customer);
                     setRole(customer.role);
                 });
             };

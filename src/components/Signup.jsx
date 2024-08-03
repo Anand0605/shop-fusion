@@ -27,12 +27,12 @@ const Signup = () => {
         try {
             e.preventDefault()
             setloader(true)
-             const User = await createUserWithEmailAndPassword(auth,formValue.email, formValue.password)
+             const UserCre = await createUserWithEmailAndPassword(auth,formValue.email, formValue.password)
              await updateProfile(auth.currentUser,{displayName:formValue.fullname})
              await addDoc(collection(db, "customers"), {
                 email: formValue.email,
                 customerName: formValue.fullname,
-                userId: userCre.user.uid,
+                userId: UserCre.user.uid,
                 mobile: formValue.mobile,
                 createdAt: serverTimestamp()
             })

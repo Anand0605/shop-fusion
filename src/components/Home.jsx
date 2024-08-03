@@ -146,15 +146,12 @@ const Home = ({ slider, title = 'Latest products' }) => {
                         modules={[Navigation, Pagination]}
                         pagination={true}
                     >
-                        <SwiperSlide><img src="/images/p1.jpg" alt="" /></SwiperSlide>
-                        <SwiperSlide><img src="/images/p2.jpg" alt="" /></SwiperSlide>
-                        <SwiperSlide><img src="/images/p3.jpg" alt="" /></SwiperSlide>
-                        <SwiperSlide><img src="/images/p4.jpg" alt="" /></SwiperSlide>
-                        <SwiperSlide><img src="/images/p5.jpg" alt="" /></SwiperSlide>
-                        <SwiperSlide><img src="/images/p6.jpg" alt="" /></SwiperSlide>
-                        <SwiperSlide><img src="/images/p7.jpg" alt="" /></SwiperSlide>
-                        <SwiperSlide><img src="/images/p8.jpg" alt="" /></SwiperSlide>
-                        <SwiperSlide><img src="/images/p9.jpg" alt="" /></SwiperSlide>
+                        <SwiperSlide><img className='w-full ' src="/images/b11.jpg" alt="" /></SwiperSlide>
+                        <SwiperSlide><img className='' src="/images/b99.jpg" alt="" /></SwiperSlide>
+                        <SwiperSlide><img src="/images/44.jpg" alt="" /></SwiperSlide>
+                        <SwiperSlide><img src="/images/55.jpg" alt="" /></SwiperSlide>
+                        <SwiperSlide><img className='w-full h-auto' src="/images/b88.jpg" alt="" /></SwiperSlide>
+                        <SwiperSlide><img className='w-full h-auto' src="/images/b222.jpg" alt="" /></SwiperSlide>
                     </Swiper>
                 </header>
             }
