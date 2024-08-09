@@ -11,9 +11,9 @@ const db = getFirestore(firebaseAppConfig)
 const Orders = () => {
 
     const [orders, setOrders] = useState([])
-    
+
     useEffect(() => {
-        const req = async() => {
+        const req = async () => {
             const snapshot = await getDocs(collection(db, 'orders'))
             const tmp = []
             snapshot.forEach((doc) => {
@@ -29,7 +29,7 @@ const Orders = () => {
         req()
     }, [])
 
-    const updateOrderStatus = async(e, orderId) => {
+    const updateOrderStatus = async (e, orderId) => {
         try {
             const status = e.target.value
             const ref = doc(db, 'orders', orderId)
@@ -69,14 +69,16 @@ const Orders = () => {
                                         background: (index + 1) % 2 === 0 ? '#f1f5f9' : 'white'
                                     }}>
                                         <td className='py-4 pl-3'>{item.orderId}</td>
-                                        <td className='capitalize w-[150px]'>{item.customerName}</td>
-                                        <td className='w-[250px]'>{item.email}</td>
-                                        <td className='w-[250px]'>{item.address.mobile}</td>
-                                        <td className='capitalize w-[250px]'>{item.title}</td>
-                                        <td className='w-[150px]'>₹{item.price.toLocaleString()}</td>
-                                        <td className='w-[150px]'>{moment(item.createdAt).format('DD MMM YYYY hh:mm:ss A')}</td>
+                                        <td className='capitalize w-[150px]'>{item.customerName || 'N/A'}</td>
+                                        <td className='w-[250px]'>{item.email || 'N/A'}</td>
+                                        <td className='w-[250px]'>{item.address?.mobile || 'N/A'}</td>
+                                        <td className='capitalize w-[250px]'>{item.title || 'N/A'}</td>
+                                        <td className='w-[150px]'>₹{item.price ? item.price.toLocaleString() : 'N/A'}</td>
+                                        <td className='w-[150px]'>{item.createdAt ? moment(item.createdAt).format('DD MMM YYYY hh:mm:ss A') : 'N/A'}</td>
                                         <td>
-                                            {`${item.address.address},${item.address.city},${item.address.state},${item.address.country},${item.address.pincode},Mob-${item.address.mobile},`}
+                                            {item.address ? 
+                                                `${item.address.address}, ${item.address.city}, ${item.address.state}, ${item.address.country}, ${item.address.pincode}, Mob-${item.address.mobile}` 
+                                                : 'N/A'}
                                         </td>
                                         <td>
                                             <select className='border border-gray-200 p-1 w-[150px]' onChange={(e) => updateOrderStatus(e, item.orderId)}>
